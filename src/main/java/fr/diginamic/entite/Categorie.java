@@ -34,7 +34,7 @@ public class Categorie {
 
 	@Override
 	public String toString() {
-		return "Categorie [id=" + id + ", nomCategorie=" + nomCategorie + ", produits=" + produits + "]";
+		return "Categorie [id=" + id + ", nomCategorie=" + nomCategorie + "  ]";
 	}
 
 	public int getId() {

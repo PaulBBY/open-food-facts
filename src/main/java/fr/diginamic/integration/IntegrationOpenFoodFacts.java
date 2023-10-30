@@ -44,9 +44,11 @@ public class IntegrationOpenFoodFacts {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("open-food-facts");
+		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("open2");
 		EntityManager em = entityManagerFactory.createEntityManager();
 		
+		
+	
 		
 		MarqueDao marqueDao = new MarqueDao();
 		MacroElementDao macroElementDao = new MacroElementDao();
@@ -79,7 +81,6 @@ public class IntegrationOpenFoodFacts {
 			}
 			
 			String nomCategorie = parsedAll[0];
-			System.out.println(nomCategorie);
 			String nomMarque = parsedAll[1];
 			String nomProduit = parsedAll[2];
 			char nutrition = parsedAll[3].charAt(0);

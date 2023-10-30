@@ -33,7 +33,7 @@ public class Marque {
 
 	@Override
 	public String toString() {
-		return "Marque [id=" + id + ", nomMarque=" + nomMarque + ", produits=" + produits + "]";
+		return "Marque [id=" + id + ", nomMarque=" + nomMarque + " ]";
 	}
 
 	public int getId() {

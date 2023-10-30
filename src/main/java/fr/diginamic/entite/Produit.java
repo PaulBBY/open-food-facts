@@ -20,7 +20,7 @@ import fr.diginamic.entite.element.Mineraux;
 import fr.diginamic.entite.element.Vitamines;
 
 @Entity
-@Table(name="produits")
+@Table(name="produit")
 public class Produit {
 	
 	@Id
