@@ -21,23 +21,25 @@ public class CategorieDao implements Dao<Categorie> {
 		TypedQuery<Categorie> query = em.createQuery("select c from Categorie c where " + "c.nomCategorie= :categorie",
 				Categorie.class);
 		query.setParameter("ingredient", categorie.getNomCategorie());
-		Categorie categorieR = query.getSingleResult();
+		List<Categorie> categorieR = query.getResultList();
+		if (categorieR.size() == 0) {
+			return null;
+		}
+		return categorieR.get(0);
 
-		return categorieR;
 	}
 
 	public Categorie selectCustom(EntityManager em, String valeur) {
 		// TODO Auto-generated method stub
-		try {
-			TypedQuery<Categorie> query = em
-					.createQuery("select c from Categorie c where " + "c.nomCategorie= :categorie", Categorie.class);
-			query.setParameter("categorie", valeur);
-			Categorie categorieR = query.getSingleResult();
-			return categorieR;
-		} catch (Exception e) {
-			// TODO: handle exception
+
+		TypedQuery<Categorie> query = em.createQuery("select c from Categorie c where c.nomCategorie= :categorie",
+				Categorie.class);
+		query.setParameter("categorie", valeur);
+		List<Categorie> categorieR = query.getResultList();
+		if (categorieR.size() == 0) {
 			return null;
 		}
+		return categorieR.get(0);
 
 	}
 
@@ -52,34 +54,32 @@ public class CategorieDao implements Dao<Categorie> {
 		if (categorieE == null) {
 			em.persist(categorie);
 			return categorie;
-		} else {
-			return categorieE;
 		}
+		return categorieE;
 
 	}
 
-	public Categorie insertIfNotExist(EntityManager em, String valeur) {
+	public Categorie insertIfNotExistCustom(EntityManager em, String valeur) {
 		Categorie categorieE = selectCustom(em, valeur);
 		if (categorieE == null) {
 			Categorie categorie = new Categorie(valeur);
 			em.persist(categorie);
 			return categorie;
-		} else {
-			return categorieE;
 		}
+		return categorieE;
 
 	}
 
 	@Override
-	public boolean delete(Categorie t) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public int update(String ancienNom, String nouveauNom, EntityManager em) {
+	public int updateCustom(EntityManager em, Categorie t1, Categorie t2) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public boolean deleteCustom(EntityManager em, Categorie t) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

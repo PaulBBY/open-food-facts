@@ -1,6 +1,5 @@
 package fr.diginamic.integration;
 
-import antlr.StringUtils;
 
 public class TestDelim {
 

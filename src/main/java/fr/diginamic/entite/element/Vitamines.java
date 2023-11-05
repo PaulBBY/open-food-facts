@@ -11,46 +11,73 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import fr.diginamic.entite.Produit;
-
+/** Représente l'ensemble de valeurs de vitamines, et leurs modèle relationel*/
 @Entity
 @Table(name="vitamines")
 public class Vitamines {
 
+	/** Id de l'ensemble des vitamines*/
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
+	/* Masse en g de vitamine A, pour 100g de produit */
 	@Column(name="QUANTITE_VIT_A_POUR_100G")
 	private float vitA100g;
+	
+	/* Masse en g de vitamine D, pour 100g de produit */
 	@Column(name="QUANTITE_VIT_D_POUR_100G")
 	private float vitD100g;
+	
+	/* Masse en g de vitamine E, pour 100g de produit */
 	@Column(name="QUANTITE_VIT_E_POUR_100G")
 	private float vitE100g;
+	
+	/* Masse en g de vitamine K, pour 100g de produit */
 	@Column(name="QUANTITE_VIT_K_POUR_100G")
 	private float vitK100g;
+	
+	/* Masse en g de vitamine C, pour 100g de produit */
 	@Column(name="QUANTITE_VIT_C_POUR_100G")
 	private float vitC100g;
+	
+	/* Masse en g de vitamine B1, pour 100g de produit */
 	@Column(name="QUANTITE_VIT_B1_POUR_100G")
 	private float vitB1100g;
+	
+	/* Masse en g de vitamine B2, pour 100g de produit */
 	@Column(name="QUANTITE_VIT_B2_POUR_100G")
 	private float vitB2100g;
+	
+	/* Masse en g de vitamine PP, pour 100g de produit */
 	@Column(name="QUANTITE_VIT_PP_POUR_100G")
 	private float vitPP100g;
+	
+	/* Masse en g de vitamine B6, pour 100g de produit */
 	@Column(name="QUANTITE_VIT_B6_POUR_100G")
 	private float vitB6100g;
+	
+	/* Masse en g de vitamine B9, pour 100g de produit */
 	@Column(name="QUANTITE_VIT_B9_POUR_100G")
 	private float vitB9100g;
+	
+	/* Masse en g de vitamine B12, pour 100g de produit */
 	@Column(name="QUANTITE_VIT_B12_POUR_100G")
 	private float vitB12100g;
+	
+	/* Masse en g de beta carotene, pour 100g de produit */
 	@Column(name="QUANTITE_BETA_CAROTENE_POUR_100G")
 	private float betaCarotene100g;
 	
+	/** Relation vers produit. c.f Produit */
 	@OneToMany(mappedBy = "vitamines")
 	private Set<Produit> produits;
 
+	/** Constructeur sans paramètre */
 	public Vitamines() {
 	}
 	
+	/** Constructeur avec * paramètressauf ID*/
 	public Vitamines(float...values) {
 		this.vitA100g = values[0];
 		this.vitD100g = values[1];
@@ -66,8 +93,7 @@ public class Vitamines {
 		this.betaCarotene100g = values[11];
 	}
 	
-	
-
+	/** Méthode to String et Get/Set */
 	@Override
 	public String toString() {
 		return "Vitamine [id=" + id + ", vitA100g=" + vitA100g + ", vitD100g=" + vitD100g + ", vitE100g=" + vitE100g

@@ -18,38 +18,31 @@ public class MinerauxDao implements Dao<Mineraux> {
 	@Override
 	public Mineraux selectCustom(EntityManager em, Mineraux mineraux) {
 		// TODO Auto-generated method stub
-		try {
-			TypedQuery<Mineraux> query = em.createQuery("select m from Mineruax m where " + "m.calcium100g= ? AND "
-					+ "m.magnesium100g= ? AND " + "m.fer100g= ?", Mineraux.class);
-			query.setParameter(1, mineraux.getCalclium100g());
-			query.setParameter(2, mineraux.getMagnesium100g());
-			query.setParameter(3, mineraux.getFer100g());
-			Mineraux minerauxR = query.getSingleResult();
 
-			return minerauxR;
-		} catch (Exception e) {
-			// TODO: handle exception
+		TypedQuery<Mineraux> query = em.createQuery("select m from Mineraux m where m.calcium100g= :p1 AND m.magnesium100g= :p2 AND m.fer100g= :p3", Mineraux.class);
+		query.setParameter("p1", mineraux.getCalclium100g());
+		query.setParameter("p2", mineraux.getMagnesium100g());
+		query.setParameter("p3", mineraux.getFer100g());
+		List<Mineraux> minerauxR = query.getResultList();
+		if (minerauxR.size() == 0) {
 			return null;
 		}
+		return minerauxR.get(0);
 
 	}
 
 	public Mineraux selectCustom(EntityManager em, float... values) {
 		// TODO Auto-generated method stub
-		try {
-			TypedQuery<Mineraux> query = em.createQuery("select m from Mineruax m where " + "m.calcium100g= ? AND "
-					+ "m.magnesium100g= ? AND " + "m.fer100g= ?", Mineraux.class);
-			query.setParameter(1, values[0]);
-			query.setParameter(2, values[1]);
-			query.setParameter(3, values[2]);
-			Mineraux minerauxR = query.getSingleResult();
 
-			return minerauxR;
-		} catch (Exception e) {
-			// TODO: handle exception
+		TypedQuery<Mineraux> query = em.createQuery("select m from Mineraux m where m.calcium100g= :p1 AND m.magnesium100g= :p2 AND m.fer100g= :p3", Mineraux.class);
+		query.setParameter("p1", values[0]);
+		query.setParameter("p2", values[1]);
+		query.setParameter("p3", values[2]);
+		List<Mineraux> minerauxR = query.getResultList();
+		if (minerauxR.size() == 0) {
 			return null;
 		}
-
+		return minerauxR.get(0);
 	}
 
 	public Mineraux selectCustom(EntityManager em, int id) {
@@ -64,9 +57,9 @@ public class MinerauxDao implements Dao<Mineraux> {
 		if (minerauxE == null) {
 			em.persist(mineraux);
 			return mineraux;
-		} else {
-			return minerauxE;
 		}
+		return minerauxE;
+
 	}
 
 	public Mineraux insertIfNotExistCustom(EntityManager em, float... values) {
@@ -76,21 +69,21 @@ public class MinerauxDao implements Dao<Mineraux> {
 			Mineraux mineraux = new Mineraux(values);
 			em.persist(mineraux);
 			return mineraux;
-		} else {
-			return minerauxE;
 		}
+		return minerauxE;
+
 	}
 
 	@Override
-	public boolean delete(Mineraux t) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public int update(String ancienNom, String nouveauNom, EntityManager em) {
+	public int updateCustom(EntityManager em, Mineraux t1, Mineraux t2) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public boolean deleteCustom(EntityManager em, Mineraux t) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

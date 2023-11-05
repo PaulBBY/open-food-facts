@@ -18,39 +18,32 @@ public class MacroElementDao implements Dao<MacroElements> {
 	@Override
 	public MacroElements selectCustom(EntityManager em, MacroElements macroElement) {
 		// TODO Auto-generated method stub
-		try {
-			TypedQuery<MacroElements> query = em.createQuery("select m from MacroElements m where "
-					+ "m.quantiteGraisse= ? AND " + "m.quantiteSucre= ? AND " + "m.quantiteProteine= ?",
-					MacroElements.class);
-			query.setParameter(2, macroElement.getQuantiteGraisse());
-			query.setParameter(1, macroElement.getQuantiteSucre());
-			query.setParameter(3, macroElement.getQuantiteProteine());
-			MacroElements macroElementsR = query.getSingleResult();
-
-			return macroElementsR;
-		} catch (Exception e) {
-			// TODO: handle exception
+		TypedQuery<MacroElements> query = em.createQuery(
+				"select m from MacroElements m where m.quantiteGraisse= :p1 AND m.quantiteSucre= :p2 AND m.quantiteProteine= :p3",
+				MacroElements.class);
+		query.setParameter("p1", macroElement.getQuantiteGraisse());
+		query.setParameter("p2", macroElement.getQuantiteSucre());
+		query.setParameter("p3", macroElement.getQuantiteProteine());
+		List<MacroElements> macroElementsR = query.getResultList();
+		if (macroElementsR.size() == 0) {
 			return null;
 		}
+		return macroElementsR.get(0);
 
 	}
 
 	public MacroElements selectCustom(EntityManager em, float... valeurs) {
 		// TODO Auto-generated method stub
-		try {
-			TypedQuery<MacroElements> query = em.createQuery("select m from MacroElements m where "
-					+ "m.quantiteGraisse= ? AND " + "m.quantiteSucre= ? AND " + "m.quantiteProteine= ?",
-					MacroElements.class);
-			query.setParameter(1, valeurs[0]);
-			query.setParameter(2, valeurs[1]);
-			query.setParameter(3, valeurs[2]);
-			MacroElements macroElementsR = query.getSingleResult();
-
-			return macroElementsR;
-		} catch (Exception e) {
-			// TODO: handle exception
+		TypedQuery<MacroElements> query = em.createQuery("select m from MacroElements m where m.quantiteGraisse= :p1 AND m.quantiteSucre= :p2 AND m.quantiteProteine= :p3",
+				MacroElements.class);
+		query.setParameter("p1", valeurs[0]);
+		query.setParameter("p2", valeurs[1]);
+		query.setParameter("p3", valeurs[2]);
+		List<MacroElements> macroElementsR = query.getResultList();
+		if (macroElementsR.size() == 0) {
 			return null;
 		}
+		return macroElementsR.get(0);
 
 	}
 
@@ -66,9 +59,9 @@ public class MacroElementDao implements Dao<MacroElements> {
 		if (macroElementsE == null) {
 			em.persist(macroElements);
 			return macroElements;
-		} else {
-			return macroElementsE;
 		}
+		return macroElementsE;
+
 	}
 
 	public MacroElements insertIfNotExistCustom(EntityManager em, float... valeurs) {
@@ -78,21 +71,21 @@ public class MacroElementDao implements Dao<MacroElements> {
 			MacroElements macroElements = new MacroElements(valeurs);
 			em.persist(macroElements);
 			return macroElements;
-		} else {
-			return macroElementsE;
 		}
+		return macroElementsE;
+
 	}
 
 	@Override
-	public boolean delete(MacroElements t) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public int update(String ancienNom, String nouveauNom, EntityManager em) {
+	public int updateCustom(EntityManager em, MacroElements t1, MacroElements t2) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public boolean deleteCustom(EntityManager em, MacroElements t) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

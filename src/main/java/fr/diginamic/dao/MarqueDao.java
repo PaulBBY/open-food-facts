@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+
 import fr.diginamic.entite.Marque;
 
 public class MarqueDao implements Dao<Marque> {
@@ -21,34 +22,29 @@ public class MarqueDao implements Dao<Marque> {
 	@Override
 	public Marque selectCustom(EntityManager em, Marque marque) {
 		// TODO Auto-generated method stub
-		try {
-			TypedQuery<Marque> query = em.createQuery("select m from Marque m where " + "m.nomMarque= :marque",
-					Marque.class);
-			query.setParameter("marque", marque.getNomMarque());
-			Marque marqueR = query.getSingleResult();
 
-			return marqueR;
-		} catch (Exception e) {
-			// TODO: handle exception
+		TypedQuery<Marque> query = em.createQuery("select m from Marque m where m.nomMarque= :marque", Marque.class);
+		query.setParameter("marque", marque.getNomMarque());
+		List<Marque> marqueR = query.getResultList();
+		if (marqueR.size() == 0) {
 			return null;
 		}
+		return marqueR.get(0);
 
 	}
 
 	public Marque selectCustom(EntityManager em, String valeur) {
 		// TODO Auto-generated method stub
 
-		try {
-			TypedQuery<Marque> query = em.createQuery("select m from Marque m where " + "m.nomMarque= :marque",
-					Marque.class);
-			query.setParameter("marque", valeur);
-			Marque marqueR = query.getSingleResult();
-
-			return marqueR;
-		} catch (Exception e) {
-			// TODO: handle exception
+		TypedQuery<Marque> query = em.createQuery("select m from Marque m where m.nomMarque= :marque",
+				Marque.class);
+		query.setParameter("marque", valeur);
+		List<Marque> marqueR = query.getResultList();
+		if (marqueR.size() == 0) {
 			return null;
 		}
+		return marqueR.get(0);
+
 	}
 
 	public Marque selectCustom(int id, EntityManager em) {
@@ -64,7 +60,6 @@ public class MarqueDao implements Dao<Marque> {
 			em.persist(marque);
 			return marque;
 		}
-
 		return marqueE;
 	}
 
@@ -81,15 +76,17 @@ public class MarqueDao implements Dao<Marque> {
 	}
 
 	@Override
-	public int update(String ancienNom, String nouveauNom, EntityManager em) {
+	public int updateCustom(EntityManager em, Marque t1, Marque t2) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public boolean delete(Marque t) {
+	public boolean deleteCustom(EntityManager em, Marque t) {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	
 
 }

@@ -1,7 +1,5 @@
 package fr.diginamic.integration;
 
-import java.awt.desktop.OpenURIEvent;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -10,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -22,8 +21,7 @@ import org.hibernate.internal.build.AllowSysOut;
 import fr.diginamic.dao.AdditifDao;
 import fr.diginamic.dao.AllergeneDao;
 import fr.diginamic.dao.CategorieDao;
-import fr.diginamic.dao.Dao;
-import fr.diginamic.dao.IngredientsDao;
+import fr.diginamic.dao.IngredientDao;
 import fr.diginamic.dao.MacroElementDao;
 import fr.diginamic.dao.MarqueDao;
 import fr.diginamic.dao.MinerauxDao;
@@ -41,25 +39,23 @@ import fr.diginamic.entite.element.Vitamines;
 
 public class IntegrationOpenFoodFacts {
 
-
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("open2");
+		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("open-food-facts");
 		EntityManager em = entityManagerFactory.createEntityManager();
-		
-		
-	
-		
+		EntityTransaction tr = em.getTransaction();
+
 		MarqueDao marqueDao = new MarqueDao();
 		MacroElementDao macroElementDao = new MacroElementDao();
 		ProduitDao produitDao = new ProduitDao();
 		VitaminesDao vitaminesDao = new VitaminesDao();
 		CategorieDao categorieDao = new CategorieDao();
 		MinerauxDao minerauxDao = new MinerauxDao();
-		IngredientsDao ingredientsDao = new IngredientsDao();
+		IngredientDao ingredientsDao = new IngredientDao();
 		AllergeneDao allergenesDao = new AllergeneDao();
 		AdditifDao additifDao = new AdditifDao();
-		
+
+		/*
 		List<String> lignes = null;
 
 		Path path = Paths.get("C:\\Pro\\Java\\traitement-fichier-jpa-off\\src\\main\\resources\\open-food-facts.csv");
@@ -70,281 +66,274 @@ public class IntegrationOpenFoodFacts {
 			e.printStackTrace();
 		}
 
-	
 		System.out.println(lignes.size());
 		lignes.remove(0);
+		List<Integer> formatPb = new ArrayList<>();
+
 		for (String ligne : lignes) {
 
 			String[] parsedAll = Parseur.parseurCustom(ligne, "\\|");
-			if(parsedAll.length != 30) {
+
+			if (parsedAll.length != 30) {
+				formatPb.add(lignes.indexOf(ligne));
 				continue;
 			}
-			
+
 			String nomCategorie = parsedAll[0];
 			String nomMarque = parsedAll[1];
 			String nomProduit = parsedAll[2];
 			char nutrition = parsedAll[3].charAt(0);
-			
-			
-			float energie = 0;
-			try {
-				energie = Float.parseFloat(parsedAll[5]);
-			} catch (Exception e) {
-				// TODO: handle exception
-				
-			}	
-			float fibre = 0;
-			try {
-				 fibre = Float.parseFloat(parsedAll[8]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			float sel = 0;
-			try {
-				 sel = Float.parseFloat(parsedAll[10]);
-				
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			
-			int bool = 0;
-			try {
-				bool = Integer.parseInt(parsedAll[27]);
-			} catch (Exception e) {
-				// TODO: handle exception
-				bool = -1;
-			}
-	
-			Boolean huile=null;
-			if(bool == 1) {
+
+			float energie = Parseur.parseurStringChiffre(parsedAll[5]);
+			float fibre = Parseur.parseurStringChiffre(parsedAll[8]);
+			float sel = Parseur.parseurStringChiffre(parsedAll[10]);
+			float bool = Parseur.parseurStringChiffre(parsedAll[27]);
+
+			Boolean huile = null;
+			if (bool == 1) {
 				huile = true;
 			} else if (bool == 0) {
 				huile = false;
 			} else {
 				huile = null;
 			}
-			
-			
-			
-			float macro1 = 0;
-			try {
-				macro1 = Float.parseFloat(parsedAll[6]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			
-			float macro2=0;
-			try {
-					macro2 = Float.parseFloat(parsedAll[7]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			float macro3=0;
-			try {
-				macro3=Float.parseFloat(parsedAll[9]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			float[] signatureMacro = {	
-					macro1,
-					macro2,
-					macro3};
-			
-			
-			float vit1=0;
-			float vit2=0;
-			float vit3=0;
-			float vit4=0;
-			float vit5=0;
-			float vit6=0;
-			float vit7=0;
-			float vit8=0;
-			float vit9=0;
-			float vit10=0;
-			float vit11=0;
-			float vit12=0;
-			
-			try {
-				vit1=Float.parseFloat(parsedAll[11]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			try {
-				vit2 =Float.parseFloat(parsedAll[12]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			try {
-				vit3 = Float.parseFloat(parsedAll[13]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			
-			try {
-				vit4 = Float.parseFloat(parsedAll[14]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			
-			try {
-				vit5 =Float.parseFloat(parsedAll[15]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			try {
-				vit6=Float.parseFloat(parsedAll[16]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			try {
-				vit7 = Float.parseFloat(parsedAll[17]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			try {
-				vit8 =	Float.parseFloat(parsedAll[18]);
 
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			try {
-				vit9=Float.parseFloat(parsedAll[19]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			try {
-				vit10 = Float.parseFloat(parsedAll[20]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			try {
-				vit11 =Float.parseFloat(parsedAll[21]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			try {
-				vit12= Float.parseFloat(parsedAll[26]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-		
-			float[] signatureVitamines = {
-				vit1,
-				vit2,
-				vit3,
-				vit4,
-				vit5,
-				vit6,
-				vit7,
-				vit8,
-				vit9,
-				vit10,
-				vit11,
-				vit12
-					};	
-			
-			float fer=0;
-			float calc = 0;
-			float magn = 0;
-			try {
-				if(parsedAll[24].equals(null)) {
-					fer = Float.parseFloat(parsedAll[25]);
-				} else {
-					fer = Float.parseFloat(parsedAll[24]);
-				}
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			
-			try {
-				calc = Float.parseFloat(parsedAll[22]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			
-			try {
-				magn = Float.parseFloat(parsedAll[23]);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			float[] signatureMineraux = {
-					calc,
-					magn,
-					fer
-			};
-			System.out.println("++++"+nomProduit);
-		
-		
+			float macro1 = Parseur.parseurStringChiffre(parsedAll[6]);
+			float macro2 = Parseur.parseurStringChiffre(parsedAll[7]);
+			float macro3 = Parseur.parseurStringChiffre(parsedAll[9]);
 
-			String[] parsedIngredients = Parseur.parseurCustom(Formateur.formateurCustom(parsedAll[4], "", "_").toLowerCase(),TestDelim.testDelim(parsedAll[4]));
+			float[] signatureMacro = { macro1, macro2, macro3 };
 
-			String[] parsedAllergenes = Parseur.parseurCustom(Formateur.formateurCustom(parsedAll[28], "", "_").toLowerCase(), TestDelim.testDelim(parsedAll[28]));
-			String[] parsedAdditifs = Parseur.parseurCustom(Formateur.formateurCustom(parsedAll[29], "", "_").toLowerCase(), TestDelim.testDelim(parsedAll[29]));
-			EntityTransaction tr = em.getTransaction();
+			float vit1 = Parseur.parseurStringChiffre(parsedAll[11]);
+			float vit2 = Parseur.parseurStringChiffre(parsedAll[12]);
+			float vit3 = Parseur.parseurStringChiffre(parsedAll[13]);
+			float vit4 = Parseur.parseurStringChiffre(parsedAll[14]);
+			float vit5 = Parseur.parseurStringChiffre(parsedAll[15]);
+			float vit6 = Parseur.parseurStringChiffre(parsedAll[16]);
+			float vit7 = Parseur.parseurStringChiffre(parsedAll[17]);
+			float vit8 = Parseur.parseurStringChiffre(parsedAll[18]);
+			float vit9 = Parseur.parseurStringChiffre(parsedAll[19]);
+			float vit10 = Parseur.parseurStringChiffre(parsedAll[20]);
+			float vit11 = Parseur.parseurStringChiffre(parsedAll[21]);
+			float vit12 = Parseur.parseurStringChiffre(parsedAll[26]);
+
+			float[] signatureVitamines = { vit1, vit2, vit3, vit4, vit5, vit6, vit7, vit8, vit9, vit10, vit11, vit12 };
+
+			float calc = Parseur.parseurStringChiffre(parsedAll[22]);
+			float magn = Parseur.parseurStringChiffre(parsedAll[23]);
+			float fer = 0;
+
+			if (parsedAll[24].equals(null)) {
+				Parseur.parseurStringChiffre(parsedAll[25]);
+			} else {
+				fer = Parseur.parseurStringChiffre(parsedAll[24]);
+			}
+
+			float[] signatureMineraux = { calc, magn, fer };
+
+			System.out.println("++++" + nomProduit);
+
+			String[] parsedIngredients = Parseur.parseurCustom(
+					Formateur.formateurCustom(parsedAll[4], "", "_").toLowerCase(), TestDelim.testDelim(parsedAll[4]));
+
+			String[] parsedAllergenes = Parseur.parseurCustom(
+					Formateur.formateurCustom(parsedAll[28], "", "_").toLowerCase(),
+					TestDelim.testDelim(parsedAll[28]));
+			String[] parsedAdditifs = Parseur.parseurCustom(
+					Formateur.formateurCustom(parsedAll[29], "", "_").toLowerCase(),
+					TestDelim.testDelim(parsedAll[29]));
+
 			tr.begin();
-			
-			Categorie categorie = categorieDao.insertIfNotExist(em, nomCategorie);
+
+			Categorie categorie = categorieDao.insertIfNotExistCustom(em, nomCategorie);
 			Marque marque = marqueDao.insertIfNotExistCustom(em, nomMarque);
 			MacroElements macroElements = macroElementDao.insertIfNotExistCustom(em, signatureMacro);
 			Vitamines vitamines = vitaminesDao.insertIfNotExistCustom(em, signatureVitamines);
 			Mineraux mineraux = minerauxDao.insertIfNotExistCustom(em, signatureMineraux);
-			
+
 			Set<Ingredient> ingredients = new HashSet<>();
-			
-			
-			for(String i : parsedIngredients) {
+
+			for (String i : parsedIngredients) {
 				i = i.trim();
-				if(i.length()>25) {
+				if (i.length() > 25) {
 					continue;
 				}
 				Ingredient ingredient = ingredientsDao.insertIfNotExistCustom(em, i);
-				if(ingredient != null){
+				if (ingredient != null) {
 					ingredients.add(ingredient);
 				}
-				
+
 			}
-			
-			Set<Allergene> allergenes =  new HashSet<>();
-			for(String al : parsedAllergenes) {
+
+			Set<Allergene> allergenes = new HashSet<>();
+			for (String al : parsedAllergenes) {
 				al = al.trim();
-				if(al.length()>25) {
+				if (al.length() > 25) {
 					continue;
 				}
 				Allergene allergene = allergenesDao.insertIfNotExistCustom(em, al);
-				if(allergene != null) {
+				if (allergene != null) {
 					allergenes.add(allergene);
 				}
-				
+
 			}
-			
-			Set<Additif> additifs =  new HashSet<>();
-			for(String ad : parsedAdditifs) {
+
+			Set<Additif> additifs = new HashSet<>();
+			for (String ad : parsedAdditifs) {
 				ad = ad.trim();
-				if(ad.length()>25) {
+				if (ad.length() > 25) {
 					continue;
 				}
 				Additif additif = additifDao.insertIfNotExistCustom(em, ad);
-				if(additif!= null) {
+				if (additif != null) {
 					additifs.add(additif);
 				}
-				
+
 			}
-			
-			Produit produit = new Produit(nomProduit, nutrition, energie, fibre, sel, huile, allergenes, additifs, ingredients, vitamines, macroElements, mineraux, marque, categorie);
-			
-			System.out.println("°°°00"+""
-					+ produit.toString()
-					+ ""
-					+ ""
-			
-					);
-			
+
+			Produit produit = new Produit(nomProduit, nutrition, energie, fibre, sel, huile, allergenes, additifs,
+					ingredients, vitamines, macroElements, mineraux, marque, categorie);
+
+			System.out.println("°°°00" + "" + produit.toString() + "" + ""
+
+			);
+
 			Produit produitT = produitDao.insertIfNotExistCustom(em, produit);
-			
-			tr.commit();
-			
+
 		}
-		
+		tr.commit();
+
+		System.out.println("Il y a " + formatPb.size() + " lignes en erreur !");
+		*/
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("test");
+		int choix = 0;
+		while (choix < 99) {
+			System.out.println("Choix 1 (top10cat), 2(top10m) ?");
+			String choixMenu = scanner.nextLine();
+
+			
+
+			choix = Integer.parseInt(choixMenu);
+
+			switch (choix) {
+			case 1:
+				System.out.println("Veuillez renseigner un nom de catégorie :");
+				String choixCat10 = scanner.nextLine();
+				Categorie cat10 = categorieDao.selectCustom(em, choixCat10);
+				if (cat10 == null) {
+					System.out.println("Cette catégorie n'existe pas...");
+					break;
+				}
+				List<Produit> produits1 = produitDao.select10Custom(em, cat10);
+				System.out.println("Les 10 meilleurs produits de la catégore " + cat10.getNomCategorie() + " sont :");
+				for (Produit p : produits1) {
+					System.out.println(p.getNomProduit() + " : " + p.getNutritionGradeFr());
+				}
+				break;
+
+			case 2:
+				System.out.println("Veuillez renseigner un nom de marque :");
+				String choixMar10 = scanner.nextLine();
+				Marque mar10 = marqueDao.selectCustom(em, choixMar10);
+				if (mar10 == null) {
+					System.out.println("Cette marque n'existe pas...");
+					break;
+				}
+				List<Produit> produits2 = produitDao.select10Custom(em, mar10);
+				System.out.println("Les 10 meilleurs produits de la marque " + mar10.getNomMarque() + " sont :");
+				for (Produit p : produits2) {
+					System.out.println(p.getNomProduit()+ " : "+ p.getNutritionGradeFr());
+				}
+			case 3:
+				System.out.println("Veuillez renseigner un nom de catégorie :");
+				String choixCat10m = scanner.nextLine();
+				Categorie cat10m = categorieDao.selectCustom(em, choixCat10m);
+				if (cat10m == null) {
+					System.out.println("Cette catégorie n'existe pas...");
+					break;
+				}
+				System.out.println("Veuillez renseigner un ingrédient à exclure");
+				String choixIngcat = scanner.nextLine();
+				Ingredient ingExCat = ingredientsDao.selectCustom(em, choixIngcat);
+				if(ingExCat == null) {
+					System.out.println("Cet ingrédient n'existe pas ...");
+					break;
+				}
+				
+				List<Produit> produit3 = produitDao.select10CustomEx(em, cat10m, ingExCat);
+				for(Produit p : produit3) {
+					System.out.println(p.getNomProduit()+ " : "+p.getNutritionGradeFr());
+				}
+				break;
+			case 4:
+				System.out.println("Veuillez renseigner un nom de marque :");
+				String choixMar10m = scanner.nextLine();
+				Marque mar10m = marqueDao.selectCustom(em, choixMar10m);
+				if (mar10m == null) {
+					System.out.println("Cette marque n'existe pas...");
+					break;
+				}
+				System.out.println("Veuillez renseigner un ingrédient à exclure");
+				String choixIngmar = scanner.nextLine();
+				Ingredient ingExMar = ingredientsDao.selectCustom(em, choixIngmar);
+				if(ingExMar == null) {
+					System.out.println("Cet ingrédient n'existe pas ...");
+					break;
+				}
+				
+				List<Produit> produit4 = produitDao.select10CustomEx(em, mar10m, ingExMar);
+				for(Produit p : produit4) {
+					System.out.println(p.getNomProduit()+ " : "+p.getNutritionGradeFr());
+				}
+				break;
+			case 5:
+				System.out.println("Veuillez renseigner un nom de catégorie :");
+				String choixCat10mA = scanner.nextLine();
+				Categorie cat10mA = categorieDao.selectCustom(em, choixCat10mA);
+				if (cat10mA == null) {
+					System.out.println("Cette catégorie n'existe pas...");
+					break;
+				}
+				System.out.println("Veuillez renseigner un ingrédient à exclure");
+				String choixAllcat = scanner.nextLine();
+				Allergene allExCat = allergenesDao.selectCustom(em, choixAllcat);
+				if(allExCat == null) {
+					System.out.println("Cet allergène n'existe pas ...");
+					break;
+				}
+				
+				List<Produit> produit5 = produitDao.select10CustomEx(em, cat10mA, allExCat);
+				for(Produit p : produit5) {
+					System.out.println(p.getNomProduit()+ " : "+p.getNutritionGradeFr());
+				}
+				break;
+			case 6:
+				System.out.println("Veuillez renseigner un nom de marque :");
+				String choixMar10mA = scanner.nextLine();
+				Marque mar10mA = marqueDao.selectCustom(em, choixMar10mA);
+				if (mar10mA == null) {
+					System.out.println("Cette marque n'existe pas...");
+					break;
+				}
+				System.out.println("Veuillez renseigner un ingrédient à exclure");
+				String choixAllmar = scanner.nextLine();
+				Ingredient allExMar = ingredientsDao.selectCustom(em, choixAllmar);
+				if(allExMar == null) {
+					System.out.println("Cet allergène n'existe pas ...");
+					break;
+				}
+				
+				List<Produit> produit6 = produitDao.select10CustomEx(em, mar10mA, allExMar);
+				for(Produit p : produit6) {
+					System.out.println(p.getNomProduit()+ " : "+p.getNutritionGradeFr());
+				}
+				break;
+
+			}
+
+		} 
+
 	}
 
 }

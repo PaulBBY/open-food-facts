@@ -12,7 +12,7 @@ public class AdditifDao implements Dao<Additif> {
 	@Override
 	public List<Additif> selectAll(EntityManager em) {
 		// TODO Auto-generated method stub
-		TypedQuery<Additif> query = em.createQuery("select a from Additifs a", Additif.class);
+		TypedQuery<Additif> query = em.createQuery("select a from Additif a", Additif.class);
 		List<Additif> additifsR = query.getResultList();
 
 		return additifsR;
@@ -21,33 +21,27 @@ public class AdditifDao implements Dao<Additif> {
 	@Override
 	public Additif selectCustom(EntityManager em, Additif additif) {
 		// TODO Auto-generated method stub
-		try {
-			TypedQuery<Additif> query = em.createQuery("select a from Additifs a where " + "a.nomAdditif= :additif",
-					Additif.class);
-			query.setParameter("additif", additif.getNomAdditif());
-			Additif additifR = query.getSingleResult();
-
-			return additifR;
-		} catch (Exception e) {
-			// TODO: handle exception
+		TypedQuery<Additif> query = em.createQuery("select a from Additif a where " + "a.nomAdditif= :additif",
+				Additif.class);
+		query.setParameter("additif", additif.getNomAdditif());
+		List<Additif> additifR = query.getResultList();
+		if (additifR.size() == 0) {
 			return null;
 		}
+		return additifR.get(0);
 
 	}
 
 	public Additif selectCustom(EntityManager em, String valeur) {
 		// TODO Auto-generated method stub
-		try {
-			TypedQuery<Additif> query = em.createQuery("select a from Additifs a where " + "a.nomAdditif= :additif",
-					Additif.class);
-			query.setParameter("additif", valeur);
-			Additif additifR = query.getSingleResult();
-
-			return additifR;
-		} catch (Exception e) {
-			// TODO: handle exception
+		TypedQuery<Additif> query = em.createQuery("select a from Additif a where " + "a.nomAdditif= :additif",
+				Additif.class);
+		query.setParameter("additif", valeur);
+		List<Additif> additifR = query.getResultList();
+		if (additifR.size() == 0) {
 			return null;
 		}
+		return additifR.get(0);
 
 	}
 
@@ -63,9 +57,9 @@ public class AdditifDao implements Dao<Additif> {
 		if (additifE == null) {
 			em.persist(additif);
 			return additif;
-		} else {
-			return additifE;
 		}
+		return additifE;
+
 	}
 
 	public Additif insertIfNotExistCustom(EntityManager em, String valeur) {
@@ -75,21 +69,20 @@ public class AdditifDao implements Dao<Additif> {
 			Additif additif = new Additif(valeur);
 			em.persist(additif);
 			return additif;
-		} else {
-			return additifE;
 		}
+		return additifE;
 	}
 
 	@Override
-	public boolean delete(Additif t) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public int update(String ancienNom, String nouveauNom, EntityManager em) {
+	public int updateCustom(EntityManager em, Additif t1, Additif t2) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public boolean deleteCustom(EntityManager em, Additif t) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
